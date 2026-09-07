@@ -1017,6 +1017,7 @@ fn main() {
     spawn_conntrack(Arc::clone(&shared), tx.clone());
 
     let mut last_local_refresh = Instant::now();
+    let mut last_audit = Instant::now();
     loop {
         for_each_proc_tcp(TCP4, false, |ip, st| {
             let why: &'static str = match st {
@@ -1060,6 +1061,31 @@ fn main() {
                 }
             }
             last_local_refresh = Instant::now();
+        }
+
+        if last_audit.elapsed() >= Duration::from_secs(5) {
+            last_audit = Instant::now();
+            if !shared.cfg.dry_run {
+                let actual = load_existing_rules();
+                let mut known = lock(&shared.known);
+                let mut missing = Vec::new();
+                for ip in known.iter() {
+                    if !actual.contains(ip) {
+                        missing.push(*ip);
+                    }
+                }
+                if !missing.is_empty() {
+                    log_line(&format!(
+                        "内核规则被外部清理，同步丢弃 {} 个内存缓存项",
+                        missing.len()
+                    ));
+                    let mut managed = lock(&shared.managed);
+                    for ip in missing {
+                        known.remove(&ip);
+                        managed.remove(&ip);
+                    }
+                }
+            }
         }
 
         let ms = if cfg.interval_ms != 0 {

@@ -66,7 +66,7 @@ uname -m
 下载并安装示例（以 `x86_64` 为例）：
 
 ```bash
-VERSION=v0.1.0
+VERSION=v0.1.1
 TARGET=x86_64-unknown-linux-gnu
 curl -fLO "https://github.com/aurorax-neo/tcp-brutal-auto/releases/download/${VERSION}/tcp-brutal-auto-${VERSION}-${TARGET}.tar.gz"
 curl -fLO "https://github.com/aurorax-neo/tcp-brutal-auto/releases/download/${VERSION}/tcp-brutal-auto-${VERSION}-${TARGET}.tar.gz.sha256"
