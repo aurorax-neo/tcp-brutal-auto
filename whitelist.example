@@ -1,0 +1,11 @@
+# tcp-brutal-auto 白名单
+# 每行一个 IP 或 CIDR。空行和 # 注释忽略。
+# 设置了白名单后，只给匹配的对端加规则。
+#
+# 用法:
+#   WHITELIST_FILE=/etc/tcp-brutal-auto/whitelist tcp-brutal-auto
+#   或 WHITELIST=203.0.113.0/24,1.2.3.4
+
+203.0.113.5/32
+198.51.100.0/24
+# 2001:db8:1::/48

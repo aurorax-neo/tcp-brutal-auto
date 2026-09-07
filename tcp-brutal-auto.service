@@ -1,0 +1,16 @@
+[Unit]
+Description=tcp-brutal-auto — add Brutal destination rules at TCP handshake
+Documentation=https://github.com/HyNetworks/tcp-brutal
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+Environment=RATE=100
+ExecStartPre=-/sbin/modprobe brutal
+ExecStart=/usr/local/bin/tcp-brutal-auto
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target
