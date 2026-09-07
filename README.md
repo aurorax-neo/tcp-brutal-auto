@@ -57,14 +57,31 @@ brutalctl list
 
 ## 2. 安装 tcp-brutal-auto
 
-使用安装脚本安装程序和 systemd 服务：
+从 [GitHub Releases](https://github.com/aurorax-neo/tcp-brutal-auto/releases) 下载与你的系统架构对应的压缩包。支持 `x86_64` 和 `aarch64` Linux：
 
 ```bash
-cd tcp-brutal-auto
-sudo RATE=100 ./install.sh
+uname -m
 ```
 
-安装完成后，服务会自动启动并设置为开机启动。
+下载并安装示例（以 `x86_64` 为例）：
+
+```bash
+VERSION=v0.1.0
+TARGET=x86_64-unknown-linux-gnu
+curl -fLO "https://github.com/aurorax-neo/tcp-brutal-auto/releases/download/${VERSION}/tcp-brutal-auto-${VERSION}-${TARGET}.tar.gz"
+curl -fLO "https://github.com/aurorax-neo/tcp-brutal-auto/releases/download/${VERSION}/tcp-brutal-auto-${VERSION}-${TARGET}.tar.gz.sha256"
+sha256sum -c "tcp-brutal-auto-${VERSION}-${TARGET}.tar.gz.sha256"
+tar -xzf "tcp-brutal-auto-${VERSION}-${TARGET}.tar.gz"
+cd "tcp-brutal-auto-${VERSION}-${TARGET}"
+sudo install -Dm755 tcp-brutal-auto /usr/local/bin/tcp-brutal-auto
+sudo install -Dm644 tcp-brutal-auto.service /etc/systemd/system/tcp-brutal-auto.service
+sudo install -Dm644 whitelist.example /etc/tcp-brutal-auto/whitelist.example
+sudo install -Dm644 china-mainland-ipv4.txt /etc/tcp-brutal-auto/china-mainland-ipv4.txt
+sudo systemctl daemon-reload
+sudo systemctl enable --now tcp-brutal-auto
+```
+
+`aarch64` 用户将 `TARGET` 改为 `aarch64-unknown-linux-gnu`。发布包内同时包含示例白名单和中国大陆 IPv4 白名单。
 
 ---
 
@@ -180,7 +197,7 @@ sudo apt install conntrack   # Debian/Ubuntu，启用 conntrack 事件
 
 ## 4. systemd 开机启动
 
-`install.sh` 会安装单元。手动：
+Release 安装命令会安装并启动 systemd 服务。手动安装或修改服务时：
 
 ```bash
 sudo tee /etc/systemd/system/tcp-brutal-auto.service >/dev/null <<'EOF'
