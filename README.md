@@ -74,9 +74,9 @@ sha256sum -c "tcp-brutal-auto-${VERSION}-${TARGET}.tar.gz.sha256"
 tar -xzf "tcp-brutal-auto-${VERSION}-${TARGET}.tar.gz"
 cd "tcp-brutal-auto-${VERSION}-${TARGET}"
 sudo install -Dm755 tcp-brutal-auto /usr/local/bin/tcp-brutal-auto
-sudo install -Dm644 packaging/tcp-brutal-auto.service /etc/systemd/system/tcp-brutal-auto.service
-sudo install -Dm644 packaging/whitelist.example /etc/tcp-brutal-auto/whitelist.example
-sudo install -Dm644 data/china-mainland-ipv4.txt /etc/tcp-brutal-auto/china-mainland-ipv4.txt
+sudo install -Dm644 tcp-brutal-auto.service /etc/systemd/system/tcp-brutal-auto.service
+sudo install -Dm644 whitelist.example /etc/tcp-brutal-auto/whitelist.example
+sudo install -Dm644 china-mainland-ipv4.txt /etc/tcp-brutal-auto/china-mainland-ipv4.txt
 sudo systemctl daemon-reload
 sudo systemctl enable --now tcp-brutal-auto
 ```
@@ -136,8 +136,7 @@ sudo RATE=100 /usr/local/bin/tcp-brutal-auto
 sudo WHITELIST=203.0.113.0/24,198.51.100.8 RATE=100 tcp-brutal-auto
 
 # 文件（推荐）
-sudo mkdir -p /etc/tcp-brutal-auto
-sudo cp packaging/whitelist.example /etc/tcp-brutal-auto/whitelist
+sudo cp /etc/tcp-brutal-auto/whitelist.example /etc/tcp-brutal-auto/whitelist
 sudo $EDITOR /etc/tcp-brutal-auto/whitelist
 sudo WHITELIST_FILE=/etc/tcp-brutal-auto/whitelist RATE=100 tcp-brutal-auto
 ```
@@ -163,10 +162,9 @@ Environment=WHITELIST_FILE=/etc/tcp-brutal-auto/whitelist
 - APNIC 国家代码 `CN` 的 IPv4 分配记录
 - [`appshubcc/bett-rules`](https://github.com/appshubcc/bett-rules) 发布的 CN GeoIP IPv4 规则（来源为 IPinfo Lite）
 
-列表取两套数据的并集，用于尽量完整地覆盖中国大陆 IPv4；不主动包含香港、澳门和台湾地区。启用方法：
+列表取两套数据的并集，用于尽量完整地覆盖中国大陆 IPv4；不主动包含香港、澳门和台湾地区。启用方法（文件在第 2 步安装时已复制到 /etc）：
 
 ```bash
-sudo install -Dm644 data/china-mainland-ipv4.txt /etc/tcp-brutal-auto/china-mainland-ipv4.txt
 sudo systemctl edit tcp-brutal-auto
 ```
 
