@@ -74,9 +74,9 @@ sha256sum -c "tcp-brutal-auto-${VERSION}-${TARGET}.tar.gz.sha256"
 tar -xzf "tcp-brutal-auto-${VERSION}-${TARGET}.tar.gz"
 cd "tcp-brutal-auto-${VERSION}-${TARGET}"
 sudo install -Dm755 tcp-brutal-auto /usr/local/bin/tcp-brutal-auto
-sudo install -Dm644 tcp-brutal-auto.service /etc/systemd/system/tcp-brutal-auto.service
-sudo install -Dm644 whitelist.example /etc/tcp-brutal-auto/whitelist.example
-sudo install -Dm644 china-mainland-ipv4.txt /etc/tcp-brutal-auto/china-mainland-ipv4.txt
+sudo install -Dm644 packaging/tcp-brutal-auto.service /etc/systemd/system/tcp-brutal-auto.service
+sudo install -Dm644 packaging/whitelist.example /etc/tcp-brutal-auto/whitelist.example
+sudo install -Dm644 data/china-mainland-ipv4.txt /etc/tcp-brutal-auto/china-mainland-ipv4.txt
 sudo systemctl daemon-reload
 sudo systemctl enable --now tcp-brutal-auto
 ```
@@ -137,7 +137,7 @@ sudo WHITELIST=203.0.113.0/24,198.51.100.8 RATE=100 tcp-brutal-auto
 
 # 文件（推荐）
 sudo mkdir -p /etc/tcp-brutal-auto
-sudo cp whitelist.example /etc/tcp-brutal-auto/whitelist
+sudo cp packaging/whitelist.example /etc/tcp-brutal-auto/whitelist
 sudo $EDITOR /etc/tcp-brutal-auto/whitelist
 sudo WHITELIST_FILE=/etc/tcp-brutal-auto/whitelist RATE=100 tcp-brutal-auto
 ```
@@ -158,7 +158,7 @@ Environment=WHITELIST_FILE=/etc/tcp-brutal-auto/whitelist
 
 #### 中国大陆 IPv4 白名单
 
-仓库中的 `china-mainland-ipv4.txt` 合并以下两套数据，并对结果去重、合并相邻 CIDR：
+仓库中的 `data/china-mainland-ipv4.txt` 合并以下两套数据，并对结果去重、合并相邻 CIDR：
 
 - APNIC 国家代码 `CN` 的 IPv4 分配记录
 - [`appshubcc/bett-rules`](https://github.com/appshubcc/bett-rules) 发布的 CN GeoIP IPv4 规则（来源为 IPinfo Lite）
@@ -166,7 +166,7 @@ Environment=WHITELIST_FILE=/etc/tcp-brutal-auto/whitelist
 列表取两套数据的并集，用于尽量完整地覆盖中国大陆 IPv4；不主动包含香港、澳门和台湾地区。启用方法：
 
 ```bash
-sudo install -Dm644 china-mainland-ipv4.txt /etc/tcp-brutal-auto/china-mainland-ipv4.txt
+sudo install -Dm644 data/china-mainland-ipv4.txt /etc/tcp-brutal-auto/china-mainland-ipv4.txt
 sudo systemctl edit tcp-brutal-auto
 ```
 
@@ -281,3 +281,9 @@ sudo systemctl daemon-reload
 sudo brutalctl flush
 bash <(curl -fsSL https://tcp.hy2.sh/) uninstall
 ```
+
+---
+
+## 8. 开源协议
+
+本项目采用 [MIT License](LICENSE) 开源协议。

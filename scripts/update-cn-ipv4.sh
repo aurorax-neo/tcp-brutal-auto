@@ -3,7 +3,7 @@ set -eu
 
 SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 REPO_DIR=$(dirname -- "$SCRIPT_DIR")
-OUTPUT=${1:-"$REPO_DIR/china-mainland-ipv4.txt"}
+OUTPUT=${1:-"$REPO_DIR/data/china-mainland-ipv4.txt"}
 OUTPUT_PARENT=$(dirname -- "$OUTPUT")
 mkdir -p "$OUTPUT_PARENT"
 OUTPUT_DIR=$(CDPATH= cd -- "$OUTPUT_PARENT" && pwd)
