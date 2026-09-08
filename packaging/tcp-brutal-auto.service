@@ -6,7 +6,7 @@ Wants=network-online.target
 
 [Service]
 Type=simple
-Environment=RATE=100
+Environment=RATE=256
 ExecStartPre=-/sbin/modprobe brutal
 ExecStart=/usr/local/bin/tcp-brutal-auto
 Restart=always
