@@ -2,8 +2,8 @@ name: Release
 
 on:
   push:
-    tags:
-      - "v*"
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -13,6 +13,34 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
+  check-version:
+    name: Check Version
+    runs-on: ubuntu-24.04
+    outputs:
+      version: ${{ steps.get_version.outputs.version }}
+      should_release: ${{ steps.check_release.outputs.should_release }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Get version from Cargo.toml
+        id: get_version
+        run: |
+          VERSION=$(grep '^version = ' Cargo.toml | head -1 | cut -d'"' -f2)
+          echo "version=v$VERSION" >> $GITHUB_OUTPUT
+      - name: Check if release is needed
+        id: check_release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ steps.get_version.outputs.version }}"
+          if gh release view "$TAG" --repo ${{ github.repository }} >/dev/null 2>&1; then
+            echo "Release $TAG already exists. Skipping."
+            echo "should_release=false" >> $GITHUB_OUTPUT
+          else
+            echo "Release $TAG does not exist. Will trigger release."
+            echo "should_release=true" >> $GITHUB_OUTPUT
+          fi
+
   test:
     name: Test
     runs-on: ubuntu-24.04
@@ -28,7 +56,8 @@ jobs:
 
   package:
     name: Package ${{ matrix.target }}
-    needs: test
+    needs: [check-version, test]
+    if: needs.check-version.outputs.should_release == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
@@ -50,7 +79,7 @@ jobs:
       - name: Create archive
         env:
           TARGET: ${{ matrix.target }}
-          VERSION: ${{ github.ref_name }}
+          VERSION: ${{ needs.check-version.outputs.version || 'v0.0.0-dev' }}
         run: |
           set -eu
           package="tcp-brutal-auto-${VERSION}-${TARGET}"
@@ -73,8 +102,8 @@ jobs:
 
   release:
     name: Publish GitHub Release
-    if: startsWith(github.ref, 'refs/tags/v')
-    needs: package
+    needs: [check-version, package]
+    if: needs.check-version.outputs.should_release == 'true'
     runs-on: ubuntu-24.04
     steps:
       - name: Download packages
@@ -86,5 +115,6 @@ jobs:
       - name: Publish release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ needs.check-version.outputs.version }}
           generate_release_notes: true
           files: release/*
