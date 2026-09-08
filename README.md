@@ -66,8 +66,8 @@ uname -m
 下载并安装示例（以 `x86_64` 为例）：
 
 ```bash
-VERSION=v0.1.1
-TARGET=x86_64-unknown-linux-gnu
+VERSION=v0.1.2
+TARGET=x86_64-unknown-linux-musl
 curl -fLO "https://github.com/aurorax-neo/tcp-brutal-auto/releases/download/${VERSION}/tcp-brutal-auto-${VERSION}-${TARGET}.tar.gz"
 curl -fLO "https://github.com/aurorax-neo/tcp-brutal-auto/releases/download/${VERSION}/tcp-brutal-auto-${VERSION}-${TARGET}.tar.gz.sha256"
 sha256sum -c "tcp-brutal-auto-${VERSION}-${TARGET}.tar.gz.sha256"
@@ -81,7 +81,7 @@ sudo systemctl daemon-reload
 sudo systemctl enable --now tcp-brutal-auto
 ```
 
-`aarch64` 用户将 `TARGET` 改为 `aarch64-unknown-linux-gnu`。发布包内同时包含示例白名单和中国大陆 IPv4 白名单。
+`aarch64` 用户将 `TARGET` 改为 `aarch64-unknown-linux-musl`。发布包内同时包含示例白名单和中国大陆 IPv4 白名单。
 
 ---
 

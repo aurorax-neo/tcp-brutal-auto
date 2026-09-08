@@ -1,6 +1,6 @@
 [package]
 name = "tcp-brutal-auto"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 description = "Watch TCP handshake peers and add TCP Brutal destination rules before connections establish"
 
